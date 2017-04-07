@@ -87,6 +87,9 @@ local $Kernel::OM = Kernel::System::ObjectManager->new(
 );
 
 my $DatabaseHost = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseHost');
+my @DatabaseStringList = split(':',$DatabaseString);
+my $DatabaseHost = $DatabaseStringList[0];
+my $DatabasePort = $DatabaseStringList[1];
 my $Database     = $Kernel::OM->Get('Kernel::Config')->Get('Database');
 my $DatabaseUser = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseUser');
 my $DatabasePw   = $Kernel::OM->Get('Kernel::Config')->Get('DatabasePw');
@@ -211,6 +214,9 @@ if ( $DB =~ m/mysql/i ) {
     print "Dump $DB data to $Directory/DatabaseBackup.sql ... ";
     if ($DatabasePw) {
         $DatabasePw = "-p'$DatabasePw'";
+    }
+    if ($DatabasePort) {
+        $DatabasePort = "-P'$DatabasePort'";
     }
     if ( !system("$DBDump -u $DatabaseUser $DatabasePw -h $DatabaseHost $Database > $Directory/DatabaseBackup.sql") ) {
         print "done\n";
